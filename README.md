@@ -51,6 +51,8 @@ Cuidado: Solo se empaqueta una vez por versión, si quieres generar un nuevo emp
 
 Se guardarán reportes de cada actualización y cada error en la carpeta de Logs. La carpeta Data.json contiene los diccionarios de cada proyecto.
 
+Si algo sale mal, considere agregar las carpetas "Logs" y "Data"
+
 Actualizaré esto de vez en cuando; solo hice un binario para linux, pero de nuevo, pueden hacer con esto lo que deseen.
 
 # jensaki152@gmail.com
