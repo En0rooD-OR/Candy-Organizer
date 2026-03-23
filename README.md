@@ -56,7 +56,7 @@ Si algo sale mal, considere agregar las carpetas "Logs" y "Data".
 #### Dependencias:
 ```
 os, time, json, shutil
-``
+```
 
 Actualizaré esto de vez en cuando; solo hice un binario para linux, pero de nuevo, pueden hacer con esto lo que deseen.
 
