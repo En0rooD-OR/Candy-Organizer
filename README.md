@@ -9,7 +9,7 @@ Está pensado para usarse con almacenamiento externo, como un usb o una targeta 
 Hay pequeños problemas con el empaquetado, por ejemplo solo guarda un zip por versión, en lugar de reemplazarlo, pero no crashea.
 Tampoco puedes borrar proyectos y solo empieza a respaldar archivos luego de ejecutar run. 
 
-Al iniciar el ejecutable se recorrerán todo el diccionario de proyectos, y verificará que los directorios configurados existan; si no, saltará una advertencia y preguntará si deseas continuar.
+Al iniciar el ejecutable se recorrerá todo el diccionario de proyectos, y verificará que los directorios configurados existan; si no, saltará una advertencia y preguntará si deseas continuar.
 
 #### USO:
 
