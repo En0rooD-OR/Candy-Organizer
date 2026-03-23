@@ -6,7 +6,7 @@ Este es un programa de consola, es decir que no cuenta con GUI.
 Funciona como un especie de organizador, guarda una carpeta y copia su contenido en otra, categorizado por versiones. 
 Está pensado para usarse con almacenamiento externo, como un usb o una targeta de memoria; tambien se puede usar con almacenamiento interno pero no tendria sentido.
 
-Hay pequeños problemas con el empaquetado por ejemplo, solo guarda un zip por versión, en lugar de reemplazarlo, pero no crashea.
+Hay pequeños problemas con el empaquetado, por ejemplo solo guarda un zip por versión, en lugar de reemplazarlo, pero no crashea.
 Tampoco puedes borrar proyectos y solo empieza a respaldar archivos luego de ejecutar run. 
 
 Al iniciar el ejecutable se recorrerán todo el diccionario de proyectos, y verificará que los directorios configurados existan; si no, saltará una advertencia y preguntará si deseas continuar.
