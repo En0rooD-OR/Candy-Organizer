@@ -1,0 +1,9 @@
+{
+    "format": "zip",
+    
+    "delAfterPacked": true,
+    
+    "every": 5,
+
+    "startOnExecute": false
+}

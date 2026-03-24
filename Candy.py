@@ -2,12 +2,13 @@
 
 import os, time, json, shutil
 
-ver: str = "0.0.1"
+ver: str = "0.0.2"
 
-DATA_FILE: str = "Data/Data.json"
-LOG_DIR: str = "Logs"
+DATA_FILE: str = "./Data/Data.json"
+LOG_DIR: str = "./Logs"
+CONFIG_FILE: str = "./Config.json"
 
-print(f"Candy Organizer v{ver} - 21/03/26 \nAutor: Kātsu Dev. jensaki52@gmail.com")
+print(f"Candy Organizer v{ver} - 24/03/26 \nAutor: Kātsu Dev. jensaki52@gmail.com. Paypal: mitsuprojects3@gmail.com")
 
 
 # ALL: Función de logs
@@ -30,9 +31,22 @@ def load():
         with open(DATA_FILE, "r") as f:
             try:
                 return json.load(f)
-            except json.JSONDecodeError:
+            except json.JSONDecodeError as e:
+                log(e)
                 return {}
             
+    except Exception as e:
+        print(f"Error fatal: {e}")
+        log(e)
+
+def load_config():
+    try: 
+        with open(CONFIG_FILE, "r") as c:
+            try:
+                return json.load(c)
+            except json.JSONDecodeError as e:
+                log(e)
+                
     except Exception as e:
         print(f"Error fatal: {e}")
         log(e)
@@ -64,7 +78,7 @@ def check(data) -> int:
                 log(f"ERROR: Backup no encontrado {v["backup"]}")
                 errors += 1
 
-        print(f"\nVerificación completa. {errors} errores.\n")
+        print(f"\nVerificación completa. {errors} errores.")
         return errors
     
     except Exception as e:
@@ -121,11 +135,11 @@ def list_projects(data):
         return
 
     for k, v in data.items():
-        print(f"ID {k}: {v["src"]} (v{v["version"]})")
+        print(f"ID {k}: {v["src"]}, {v["weight"]}bytes. (v{v["version"]})")
 
 # ALL: Monitorea cuando un proyecto se actualiza
 
-def run(data):
+def run(data, f_data):
     print("Monitoreando cambios... (Ctrl+C para salir)")
     try:
         while True:
@@ -147,10 +161,11 @@ def run(data):
                     log(f"Backup creado para {v["src"]} versión {v["version"]}")
                     print(f"Backup actualizado: {v["src"]}")
 
-            time.sleep(5)
+            time.sleep(f_data["every"])
 
     except KeyboardInterrupt:
         print("\nMonitoreo detenido.")
+        log("Monitoreo abortado.")
     
     except Exception as e:
         print(f"Error fatal: {e}")
@@ -158,7 +173,7 @@ def run(data):
 
 # ALL: Empaquetar en un zip
 
-def package(data):
+def package(data, f_data):
     id = input("ID del proyecto: ")
 
     try:
@@ -174,13 +189,21 @@ def package(data):
             return
 
         name: str = f"{os.path.basename(v["src"])}_backup"
-        shutil.make_archive(name, "zip", path)
+        shutil.make_archive(name, f_data["format"], path)
         shutil.move(f"{name}.zip", path)
-        #shutil.rmtree(os.path.join(v["backup"], v["version"]))
 
         log(f"Proyecto empaquetado: {name}")
         print("Empaquetado listo.")
-    
+
+        if f_data["delAfterPacked"]:
+            log(f"Borrado automático")
+            for d in os.listdir(v["backup"]):
+                shutil.rmtree(os.path.join(v["backup"], d))
+                log(f"{os.path.join(v["backup"], d)} ha sido borrado.")
+                
+    except NotADirectoryError:
+        print("...")
+
     except Exception as e:
         print(f"Error fatal: {e}")
         log(e)
@@ -238,37 +261,70 @@ def change(data):
         print("ID inválido.")
         return
 
+def help():
+    print(f"Candy v{ver}, estos son funciones internas del programa.")
+    print(f"Lista de comandos: \n - help: Muestra la lista de comandos. \n - add: Agrega un proyecto nuevo. \n - change/ch: Cambia los datos de un proyecto. \n - package/pkg: Empaqueta el backup de un proyecto. \n - list/ls: Muestra la lista de proyectos. \n - check: Recorre los directorios configurados y verifica que existan. \n - run: Empieza a monitorear los cambios entre los directorios establecidos y el directorio de backup. \n - exit: Termina el programa. \nRecuerde que puede cambiar ciertos comportamientos del programa en {os.path.join(CONFIG_FILE)}.")
+
 # CLI
 
 def main():
-    data: dict = load()
+    try:    
+        data: dict = load()
+        f_data: dict = load_config()
+        
+        log("Programa iniciado.")
 
-    if not data:
-        print("No hay proyectos configurados.")
+        if not data:
+            print("No hay proyectos configurados.")
 
-    if check(data) > 0:
-        op: str = input("¿Deseas continuar? (s/n): ").lower()
-        if op != "s":
-            return
+        elif not f_data: 
+            print("Advertencia: No es posible cargar el archivo de configuración.")
+            log("No es posible cargar 'Config.json'")
 
-    while True:
-        cmd: str = input("\nIngresa un comando (add/change/package/list/run/exit): ").lower()
+        de: int = check(data)
+        if de > 0:
+            op: str = input(f"Advertencia: Existen más de {de} directorios erroneos ¿Deseas continuar? (s/n): ").lower()
+            if op != "s":
+                return
 
-        if cmd == "add":
-            add(data)
-        elif cmd == "list":
-            list_projects(data)
-        elif cmd == "run":
-            run(data)
-        elif cmd == "package":
-            package(data)
-        elif cmd == "change":
-            change(data)
-        elif cmd == "exit":
-            break
-        else:
-            print("Comando no reconocido.")
+        while True:
+            cmd: str = input("\nIngresa un comando (help): ").lower()
 
+            if cmd == "add":
+                add(data)
+
+            elif cmd == "list" or cmd == "ls":
+                list_projects(data)
+
+            elif cmd == "run" or f_data["startOnExecute"]:
+                run(data, f_data)
+                log("Inicio automático.")
+
+            elif cmd == "package" or cmd == "pkg":
+                package(data, f_data)
+
+            elif cmd == "change" or cmd == "ch":
+                change(data)
+            
+            elif cmd == "check":
+                check(data)
+            
+            elif cmd == "help":
+                help()
+
+            elif cmd == "exit":
+                log("Programa finalizado.")
+                break
+            
+            else:
+                print("Comando no reconocido, use 'help' para ver la lista de comandos.")
+
+    except KeyboardInterrupt:
+        log("Programa finalizado.")
+
+    except Exception as e:
+        print(f"Error fatal: {e}")
+        log(e)
 
 if __name__ == "__main__":
     main()
