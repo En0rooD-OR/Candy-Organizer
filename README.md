@@ -23,11 +23,11 @@ every: Tiempo de cada actualización del backup. (int/float, '5' por defecto.)
 startOnExecute: Iniciar automáticamente despues de ejecutar el programa. (bool, 'false' por defecto.)
 ```
 
-- *Nuevos logs agregados:* Entre ellos, logs de inicio y finalización del programa, excepciones en main() y run().
+- *Nuevos logs agregados:* Entre ellos, logs de inicio y finalización del programa, excepciones en `main()` y `run()`.
 
 - *Más excepciones.*
 
-- *Excepción de salida en main:* Ctr+c.
+- *Excepción de salida en main:* Ctr+c`.
 
 - *Alternativas al escribir comandos:*
 ```
