@@ -1,4 +1,4 @@
-# Autor: Katsu Dev
+# Autor: Katsu Dev [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/katsu-def/Candy-Organizer)
 
 Usalo y editalo como desees
 
