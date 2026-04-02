@@ -2,7 +2,7 @@
 
 Usalo y editalo como desees
 
-Este es un programa de consola, es decir que no cuenta con GUI. diseñado para ser simple y ligero.
+Este es un programa de consola, es decir que no cuenta con GUI, diseñado para ser simple y ligero.
 Funciona como un especie de organizador, guarda una carpeta y copia su contenido en otra, categorizado por versiones. 
 Está pensado para usarse con almacenamiento externo, como un usb o una targeta de memoria.
 
