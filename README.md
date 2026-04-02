@@ -68,7 +68,7 @@ Si está configurado en el archivo `Config.json`, se iniciará automáticamente 
 ```
 format: Tipo de empaquetado. (str, 'zip' por defecto.)
 delAfterPacked: Borrar después de empaquetar. (bool, 'true' por defecto.)
-every: frecuencia de actualización actualización del backup. (int/float, '5' por defecto.)
+every: frecuencia de actualización del backup. (int/float, '5' por defecto.)
 startOnExecute: Iniciar automáticamente al ejecutar el programa. (bool, 'false' por defecto.)
 ```
 
