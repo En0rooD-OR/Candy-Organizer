@@ -214,8 +214,19 @@ def package(data, f_data):
             print("No existe este directorio.")
             return
 
-        shutil.make_archive(name, f_data['format'], path)
-        shutil.move(f"{name}.zip", path)
+        fmt = f_data['format']
+        shutil.make_archive(name, fmt, path)
+
+        # Determine the actual file extension produced by make_archive
+        ext_map = {
+            'zip': '.zip',
+            'tar': '.tar',
+            'gztar': '.tar.gz',
+            'bztar': '.tar.bz2',
+            'xztar': '.tar.xz'
+        }
+        ext = ext_map.get(fmt, '.zip')
+        shutil.move(f"{name}{ext}", path)
 
         log(f"Proyecto empaquetado: {name}")
         print("Empaquetado listo.")
@@ -226,8 +237,10 @@ def package(data, f_data):
         if f_data['delAfterPacked']:
             log(f"Borrado automático")
             for d in os.listdir(v['backup']):
-                shutil.rmtree(os.path.join(v['backup'], d))
-                log(f"{os.path.join(v['backup'], d)} ha sido borrado.")
+                entry = os.path.join(v['backup'], d)
+                if os.path.isdir(entry):
+                    shutil.rmtree(entry)
+                    log(f"{entry} ha sido borrado.")
 
     except NotADirectoryError:
         print("...")
@@ -318,6 +331,10 @@ def main():
             print("Advertencia: No es posible cargar el archivo de configuración, se creará uno nuevo.")
             log("Error al cargar 'Config.json'")"""
 
+        if f_data.get('startOnExecute', False):
+            log("Inicio automático.")
+            run(data, f_data)
+
         de: int = check(data)
         if de > 0:
             op: str = input(f"Advertencia: Existen {de} directorios erroneos ¿Deseas continuar? (s/n): ").lower()
@@ -334,9 +351,8 @@ def main():
             elif cmd == "list" or cmd == "ls":
                 list_projects(data)
 
-            elif cmd == "run" or f_data['startOnExecute']:
+            elif cmd == "run":
                 run(data, f_data)
-                log("Inicio automático.")
 
             elif cmd == "package" or cmd == "pkg":
                 package(data, f_data)
