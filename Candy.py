@@ -2,7 +2,7 @@
 
 import os, time, json, shutil
 
-ver: str = "0.0.3"
+ver: str = "0.0.3a"
 
 DATA_FILE: str = "./Data/Data.json"
 LOG_DIR: str = "./Logs"
@@ -34,7 +34,7 @@ def log(msg):
 def load():
     try:
         if not os.path.exists(DATA_FILE): # Verifica si el archivo de data existe
-            return {} # Devuelve un diccionario vacio 
+            return {} # Devuelve un diccionario vacio en caso de que data no exista
 
         with open(DATA_FILE, "r") as f:
             try:
@@ -95,7 +95,7 @@ def check(data):
             if not os.path.exists(v['src']):
                 print(f"Proyecto {k} no encontrado: {v['src']}")
                 log(f"Error: Proyecto no encontrado {v['src']}")
-                errors += 1 # Lo añade a la lista
+                errors += 1 # Suma todas los directorios erroneos
 
             if not os.path.exists(v['backup']):
                 print(f"Backup {k} no encontrado: {v['backup']}")
@@ -323,6 +323,10 @@ def main():
             op: str = input(f"Advertencia: Existen {de} directorios erroneos ¿Deseas continuar? (s/n): ").lower()
             if op != "s":
                 return
+            
+        if f_data['startOnExecute']:
+            run(data, f_data)
+            log("Inicio automático.")
 
         while True:
             cmd: str = input("\nIngresa un comando (help): ").lower()
@@ -334,9 +338,8 @@ def main():
             elif cmd == "list" or cmd == "ls":
                 list_projects(data)
 
-            elif cmd == "run" or f_data['startOnExecute']:
+            elif cmd == "run":
                 run(data, f_data)
-                log("Inicio automático.")
 
             elif cmd == "package" or cmd == "pkg":
                 package(data, f_data)
